@@ -15,4 +15,45 @@
    [clojure.string :as string :refer [replace split blank?]]
    [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
-(render [:div [:h1 "hello world"]])
+(db! [:entries] [])
+(go
+  (db! [:entries]
+   (js->clj
+    (map
+     js/JSON.parse
+     (.filter
+      (.split
+       (<! (<ajax "regnskab.jsonl" :result :text))
+       "\n")
+      #(not= 0 (.-length %)))))
+   )
+  )
+(defn all-transfers []
+  (reverse
+   (sort
+    (apply
+     concat
+     (for [entry (db [:entries])] (get entry "transfers")))))
+  )
+
+(defn account-sum [transfers acc]
+  (if (empty? transfers)
+    acc
+    (let [[date from to amount] (first transfers)]
+      (when (= from to) (throw "from=to"))
+      (recur
+       (rest transfers)
+       (-> acc
+           (assoc from (- (get acc from) amount))
+           (assoc to (+ (get acc to) amount)))))))
+
+(defn main []
+  (into
+   [:div
+    (str (account-sum (all-transfers) {}))
+    ]
+   (for [transfer (all-transfers)]
+     [:div (str transfer)]))
+  )
+(render
+ [main])

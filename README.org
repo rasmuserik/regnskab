@@ -16,13 +16,17 @@ Data:
   - title
   - description
   - transactions
-    - entry-id
     - date
     - from-account
     - to-account
     - amount
   - types
   - attachments
+- Accounts:
+  - solsort.com bank
+  - moms
+  - udlæg
+  - udestående skat
 
 Intended functionality
 
