@@ -29,31 +29,57 @@
    )
   )
 (defn all-transfers []
-  (reverse
    (sort
     (apply
      concat
      (for [entry (db [:entries])] (get entry "transfers")))))
-  )
 
-(defn account-sum [transfers acc]
+(defn account-sum [transfers acc log]
   (if (empty? transfers)
-    acc
-    (let [[date from to amount] (first transfers)]
+    log
+    (let [[date from to amount] (first transfers)
+          status (-> acc
+                     (assoc from (- (get acc from) amount))
+                     (assoc to (+ (get acc to) amount)))
+          ]
       (when (= from to) (throw "from=to"))
       (recur
        (rest transfers)
-       (-> acc
-           (assoc from (- (get acc from) amount))
-           (assoc to (+ (get acc to) amount)))))))
+       status
+       (conj log status)
+       ))))
 
 (defn main []
-  (into
+  (let [ledger (account-sum (all-transfers) {} [])
+        cols (keys (last ledger))
+        ]
    [:div
-    (str (account-sum (all-transfers) {}))
-    ]
-   (for [transfer (all-transfers)]
-     [:div (str transfer)]))
+    (str cols)
+    (into
+     [:table
+      (into [:tr] (for [col cols] [:th col]))]
+     (interleave
+      (for [line (reverse ledger)]
+        [:tr
+         {:key (js/Math.random)}
+         (for [col cols] [:td {:key col
+                               :style {:padding-left "1em"
+                                       :text-align :right}}
+                          (/ (bit-or 0 (* 100 (get line col 0))) 100)])])
+      (for [line (reverse (all-transfers))]
+        [:tr
+         {:key (str line)}
+         [:td
+          {:col-span 11}
+          (str line)]])
+      )
+
+     
+     )
+    (into
+     [:div]
+     (for [transfer (all-transfers)]
+       [:div (str transfer)]))])
   )
 (render
  [main])

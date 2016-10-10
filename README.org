@@ -23,6 +23,7 @@ Data:
   - types
   - attachments
 - Accounts:
+  - Receivables (tilgodehavender)
   - solsort.com bank
   - moms
   - udlæg
