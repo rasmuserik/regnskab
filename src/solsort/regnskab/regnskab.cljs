@@ -51,8 +51,7 @@
 
 (defn main []
   (let [ledger (account-sum (all-transfers) {} [])
-        cols (keys (last ledger))
-        ]
+        cols (keys (last ledger))]
    [:div
     (str cols)
     (into
@@ -73,8 +72,6 @@
           {:col-span 11}
           (str line)]])
       )
-
-     
      )
     (into
      [:div]

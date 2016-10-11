@@ -1,8 +1,22 @@
 * regnskab [[https://regnskab.solsort.com/icon-small.png]]
 
+UI:
+
+- overview ledger/accounts (choose accounts to view)
+
+User stories:
+
+- v0.1
+  - Create Årsregnskab
+  - Register expense
+  - Indberetning af moms
+  - Sammenhold bank-statement
+- v0.2
+  - Make faktura
+
 Tasks:
 
-- [ ] notes about tasks/data/...
+- [X] notes about tasks/data/...
 - [ ] convert old accounting into json in private repository
 - [ ] github login - api.solsort.com
 - [ ] load data from private repository
