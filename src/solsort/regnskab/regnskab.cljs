@@ -35,6 +35,7 @@
                           (remove #(= 1 (second %))
                               (frequencies (map first entries))))
           ]
+      ; notes: 2015-07-14 off by 75øre
       (log 'dup duplicates)
       entries))))
 (defn all-transfers []
